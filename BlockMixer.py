@@ -1,4 +1,4 @@
-import win32api, win32con, time, keyboard, random, threading, tkinter as tk
+import win32api, win32con, time, keyboard, random, threading, tkinter as tk, os
 from tkinter import *
 
 
@@ -109,4 +109,5 @@ for i in range(9):
 ###
 
 BM_MainWindow()
+window.protocol("WM_DELETE_WINDOW", lambda: os._exit(0))
 window.mainloop()
