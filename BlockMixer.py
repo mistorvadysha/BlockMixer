@@ -73,7 +73,7 @@ def BlockMixer():
 
     while True:
         if win32api.GetAsyncKeyState(win32con.VK_RBUTTON) != False and keysList != []:
-            time.sleep(0.2)
+            time.sleep(0.05)
             button = str(random.choice(keysList))
             keyboard.send(f'{button}')
 
