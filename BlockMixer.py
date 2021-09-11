@@ -3,11 +3,11 @@ from tkinter import *
 
 
 ###
-version = '1.0'
+version = '1.3'
 
 window = tk.Tk()
 window.title(f'BM [v.{version}]')
-window.geometry('240x345')
+window.geometry('242x378')
 #window.iconbitmap('content\image.ico')
 window.resizable(False, False)
 frame = Frame(window, padx=10, pady=5)
@@ -20,6 +20,7 @@ def BM_MainWindow():
 
     for i in range(9):
         buttonList[i].grid(row=i, column=0, pady=2)
+        buttonPause.grid(row=9, column=0, columnspan=3, pady=2, ipadx=93, sticky=W)
 
     for i in range(9):
         scaleList[i].grid(row=i, column=1, padx=5)
@@ -52,6 +53,16 @@ def ButtonManager(i):
         entryList[i].delete(0, 'end')
         entryList[i].insert(0, '1')
         entryList[i].config(state='readonly')
+
+def ButtonPause():
+    global buttonPauseState
+    if buttonPauseState == False:
+        buttonPauseState = True
+        buttonPause.config(bg='tomato', text='Возобновить')
+    else:
+        buttonPauseState = False
+        buttonPause.config(bg='SystemButtonFace', text='Приостановить')
+
 def varUpdater(i):
     global keysList
     #if not True in buttonStateList:
@@ -70,10 +81,15 @@ def varUpdater(i):
 
 ###
 def BlockMixer():
-
     while True:
-        if win32api.GetAsyncKeyState(win32con.VK_RBUTTON) != False and keysList != []:
-            time.sleep(0.05)
+        mouseButtonStatus = str(win32api.GetAsyncKeyState(win32con.VK_RBUTTON))
+
+        if mouseButtonStatus == '-32768': mouseButtonStatusLast = 'hold'
+        elif mouseButtonStatus != '0': mouseButtonStatusLast = 'click'
+        elif mouseButtonStatus == '0': mouseButtonStatusLast = 'pass'
+
+        if mouseButtonStatusLast == 'click' and keysList != [] and buttonPauseState == False:
+            time.sleep(0.1)
             button = str(random.choice(keysList))
             keyboard.send(f'{button}')
 
@@ -87,9 +103,11 @@ keysList = []
 
 buttonList = []
 buttonStateList = []
+buttonPauseState = False
 for i in range(9):
     buttonList.append(Button(frame, width=3, font=('Consolas'), relief=GROOVE, borderwidth=2, text=str(i+1), command=lambda c=i: ButtonManager(int(buttonList[c].cget("text"))-1)))
     buttonStateList.append(False)
+    buttonPause = Button(frame, width=3, font=('Consolas'), relief=GROOVE, borderwidth=2, text='Приостановить', command=ButtonPause)
     
 
 scaleList = []
